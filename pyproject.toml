@@ -17,4 +17,4 @@ license-files = ["LICEN[CS]E*"]
 [project.urls]
 Homepage = "https://github.com/marjoriekohn/PheQTK"
 Issues = "https://github.com/marjoriekohn/PheQTK/issues"
-PheTK = "https://github.com/nhgritctran/PheTK?tab=readme-ov-file#53-phewas-module"
+PheTK = "https://github.com/nhgritctran/PheTK"
