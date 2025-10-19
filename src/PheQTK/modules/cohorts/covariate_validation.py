@@ -11,6 +11,13 @@ def get_covariates():
           "https://github.com/nhgritctran/PheTK?tab=readme-ov-file#512-add_covariates")
     print("By default, PheTK sets all covariates to 'no'")
 
+    # TODO: return a list of (name, value) pairs of covariates dataclass fields
+    # TODO: Print a numbered menu of covariate names and current values.
+    # TODO: Ask the user which number they want to toggle or edit.
+    # TODO: Update the chosen attribute on the single Covariates instance (e.g., setattr(covariates, field, new_value)).
+    # TODO: Repeat until they choose “done.”
+
+
     raw_natural_age = input("Do you want to include natural age? (y/n): ")
     natural_age = validate_yes_no_response(raw_natural_age)
 

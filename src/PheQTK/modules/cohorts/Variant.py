@@ -19,39 +19,3 @@ class Variant:
                 f"Reference Allele: {self.ref_allele}\n"
                 f"Alternate Allele: {self.alt_allele}\n"
                 )
-
-
-"""
-The Covariates class is used to store the covariates for ALL cohorts.
-This means that the covariates are the same for ALL cohorts.
-The user has the opportunity to change the covariates when the program is run.
-"""
-
-
-@dataclass
-class Covariates:
-    natural_age = False
-    age_at_last_event = False
-    sex_at_birth = False
-    ehr_length = False
-    dx_code_occurrence_count = False
-    dx_condition_count = False
-    genetic_ancestry = False
-    first_n_pcs = 10
-    drop_nulls = False
-
-    @property
-    def name(self) -> str:
-        return (f"natural_age: {self.natural_age}\n"
-                f"age_at_last_event: {self.age_at_last_event}\n"
-                f"sex_at_birth: {self.sex_at_birth}\n"
-                f"ehr_length: {self.ehr_length}\n"
-                f"dx_code_occurrence_count: {self.dx_code_occurrence_count}\n"
-                f"dx_condition_count: {self.dx_condition_count}\n"
-                f"genetic_ancestry: {self.genetic_ancestry}\n"
-                f"first_n_pcs: {self.first_n_pcs}\n"
-                f"drop_nulls: {self.drop_nulls}\n"
-                )
-
-    def __set__(self, instance, value):
-        self.instance = value
