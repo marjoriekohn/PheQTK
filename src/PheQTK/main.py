@@ -1,12 +1,24 @@
-from src.PheQTK.helpers.variant_validation import parse_variants
+from src.PheQTK.modules.cohorts import get_cohort
+from src.PheQTK.modules.phecodes import get_phecodes
+from src.PheQTK.modules.phewass import run_phewass
+from src.PheQTK.modules.plots import get_plots
 
 
-raw_input = input("Enter variant id(s): '20-13093478-G-A, 20-13091168-C-T':\n")
+def main():
+    # 1. Cohorts & Covariates
+    # TODO: ask user for their variant id(s) in a comma separated list
+    raw_variants = input("Enter variant id(s): '20-13093478-G-A, 20-13091168-C-T':\n")
+    cohorts = get_cohort(raw_variants)
 
-variants = parse_variants(raw_input)
+    # 2. Phecodes
+    phecodes = get_phecodes()
 
-for variant in variants:
-  print(f"The following variants have been saved: {variant}.")
+    # 3. PheWAS
+    phewass = run_phewass()
 
-user_approval = input("Are you ready to proceed? (y/n):")
-print(user_approval)
+    # 4. Plots
+    plots = get_plots()
+
+
+if __name__ == "__main__":
+    main()
