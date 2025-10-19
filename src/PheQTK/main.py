@@ -1,22 +1,46 @@
-from src.PheQTK.modules.cohorts import get_cohort
-from src.PheQTK.modules.phecodes import get_phecodes
-from src.PheQTK.modules.phewass import run_phewass
-from src.PheQTK.modules.plots import get_plots
+from src.PheQTK.modules.cohorts.cohorts import get_cohort
+from src.PheQTK.modules.cohorts.covariate_validation import get_covariates
+from src.PheQTK.modules.cohorts.variant_validation import get_variants
+from src.PheQTK.modules.phecodes.phecodes import get_phecodes
+from src.PheQTK.modules.phewass.phewass import run_phewass
+from src.PheQTK.modules.plots.plots import get_plots
 
 
 def main():
-    # 1. Cohorts & Covariates
-    # TODO: ask user for their variant id(s) in a comma separated list
-    raw_variants = input("Enter variant id(s): '20-13093478-G-A, 20-13091168-C-T':\n")
-    cohorts = get_cohort(raw_variants)
+    print("Welcome to PheQTK!")
 
-    # 2. Phecodes
+    """
+    1. Cohorts Module
+        instantiate class Cohort object for _All of Us_ database version 7 
+        get variant ids from user
+        generate cohorts by variant id
+        Note: this module also combines cohorts with covariate info
+        show default covariate information
+        get covariate information from user
+        generate covariate files by variant id
+    """
+    # get variants from the user
+    variants = get_variants()
+
+    # get covariates from the user
+    covariates = get_covariates()
+
+    # use PheTK to generate cohorts with covariates
+    get_cohort(variants, covariates)
+
+    """
+    3. Phecodes
+    """
     phecodes = get_phecodes()
 
-    # 3. PheWAS
+    """
+    4. PheWAS
+    """
     phewass = run_phewass()
 
-    # 4. Plots
+    """
+    5. Plots
+    """
     plots = get_plots()
 
 
