@@ -5,7 +5,7 @@ from PheQTK.helpers.response_validation import validate_yes_no_response, validat
 from PheQTK.modules.cohorts.Covariates import Covariates
 
 
-def get_covariates():
+def get_covariates() -> Covariates:
 
     # instantiate Covariates object
     covariates = Covariates()

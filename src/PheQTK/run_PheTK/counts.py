@@ -1,17 +1,7 @@
 from PheTK.Phecode import Phecode
-from PheQTK.modules.phecodes.Phecodes import Phecodes
 
 
-def get_phecodes():
-
-    # instantiate Phecodes object
-    phecodes = Phecodes()
-
-    # print default settings
-    print(f"{phecodes}")
-
-    # TODO: implement user input for unique preferences
-
+def get_counts(phecodes):
     # instantiate PheTK Phecode class
     phecode = Phecode(platform="aou")
 

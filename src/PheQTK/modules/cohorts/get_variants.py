@@ -52,5 +52,5 @@ def get_variants() -> list[Variant]:
     if not confirmation:
         get_variants()
 
-    print("Variant information saved.\n\n Next step: setting covariates...")
+    print("Variant information saved.")
     return variants

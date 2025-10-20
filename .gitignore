@@ -3,4 +3,6 @@ src/PheQTK/__pycache__/
 src/PheQTK/helpers/__pycache__/
 src/PheQTK/modules/__pycache__/
 src/PheQTK/modules/cohorts/__pycache__/
-
+src/PheQTK/modules/phecodes/__pycache__/
+src/PheQTK/modules/phewas/__pycache__/
+src/PheQTK/run_PheTK/__pycache__/

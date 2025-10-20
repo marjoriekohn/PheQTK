@@ -1,63 +1,67 @@
-from PheQTK.helpers.phecode_validation import get_phecodes
-from PheQTK.modules.cohorts.cohorts import get_cohort
-from PheQTK.helpers.covariate_validation import get_covariates
-from PheQTK.helpers.variant_validation import get_variants
-# from PheQTK.modules.phecodes.phecodes import get_phecodes
-# from PheQTK.modules.phewass.phewass import run_phewass
-# from PheQTK.modules.plots.plots import get_plots
+from PheQTK.helpers.response_validation import validate_yes_no_response
+from PheQTK.modules.cohorts.get_covariates import get_covariates
+from PheQTK.modules.cohorts.get_variants import get_variants
+from PheQTK.modules.phecodes.get_phecodes import get_phecodes
+from PheQTK.modules.phewas.get_settings import get_settings
+from PheQTK.run_PheTK.cohorts import get_cohort
+from PheQTK.run_PheTK.counts import get_counts
+from PheQTK.run_PheTK.phewas import run_phewas
+from PheQTK.helpers.presentation import *
 
 
 def run():
-    print("-------------------------------------------------")
-    print("Welcome to PheQTK (The PheWAS Quick Toolkit)")
-    print("PheQTK wraps around the PheTK package to automate PheWAS analyses.")
-    print("-------------------------------------------------")
-    print("PheQTK currently automates the following PheTK modules:")
-    print("1. Cohorts Module")
-    print("2. Phecodes Module (coming soon!)")
-    print("3. PheWAS Module (coming soon!)")
-    print("4. Plots Module (coming soon!)")
 
-    user_option = input("\nEnter the number of the module you'd like to run (to run all modules, enter 'all'): ")
-    user_option = user_option.strip().lower()
+    # Welcome
+    rule()
+    rule("Welcome to PheQTK — The PheWAS Quick Toolkit")
+    para(
+        "PheQTK is a friendly wrapper around the PheTK package that guides you "
+        "through a complete PheWAS with minimal coding. You’ll provide your core "
+        "choices up front; PheQTK will confirm them and then run each step for you.")
+    rule()
 
-    if user_option == "all":
-        print("Running all modules...")
+    # Overview
+    para("PheQTK automates the following modules:")
+    bullet("Cohorts — build a genotype-defined cohort with covariates")
+    bullet("Phecodes — choose Phecode and ICD mapping versions")
+    bullet("PheWAS — run association scans using your cohort and mappings")
+    bullet("Plots — visual summaries (coming soon)")
+    rule()
 
-        print("Starting Cohorts Module...")
-        variants = get_variants()
-        covariates = get_covariates()
-        get_cohort(variants, covariates)
-        print("Cohorts Module complete.")
+    # Module 1: Variants & Covariates
+    step(1, "Collect variants and covariates")
+    para("First, we’ll record your variant(s) and the covariates.")
+    variants = get_variants()
+    covariates = get_covariates()
+    rule()
 
-        print("Starting Phecodes Module...")
-        get_phecodes()
-        print("Phecodes Module complete.")
+    # Module 2: Phecodes
+    step(2, "Choose phecode mapping")
+    para("We’ll select a Phecode version and the ICD source.")
+    phecodes = get_phecodes()
+    rule()
 
-        # print("Starting PheWAS Module...")
-        # phewass = run_phewass()
-        # print("PheWAS Module complete.")
+    # Module 3: PheWAS settings
+    step(3, "Configure PheWAS analysis")
+    para("Next, we select analysis settings (rare-events and minimum case counts).")
+    phewas_settings = get_settings(phecodes, variants)
 
-        # print("Starting Plot Module...")
-        # plots = get_plots()
-        # print("Plot Module complete.")
+    # Final confirmation (simple Y/N)
+    rule("FINAL CONFIRMATION")
+    user_ok = input("Ready to start? (y/n): ")
+    user_ok = validate_yes_no_response(user_ok)
+    if not user_ok:
+        para("Run cancelled. No computations were started.")
+        rule("Goodbye")
+        return
 
-    elif user_option == "1":
-
-        print("Starting Cohorts Module...")
-        variants = get_variants()               # get variants from the user
-        covariates = get_covariates()           # get covariates from the user
-        get_cohort(variants, covariates)        # use PheTK to generate cohorts with covariates
-        print("Cohorts Module complete.")
-
-    # elif user_option == "2":
-        # phecodes = get_phecodes()
-
-    # elif user_option == "3":
-        # phewass = run_phewass()
-
-    # elif user_option == "4":
-        # plots = get_plots()
+    # Execution phase
+    rule("Running PheTK modules")
+    get_cohort(variants, covariates)
+    get_counts(phecodes)
+    for settings in phewas_settings:
+        run_phewas(settings)
+        print("PheTK Modules complete! Congrats 🎉")
 
 
 if __name__ == "__main__":
