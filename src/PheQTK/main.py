@@ -1,9 +1,9 @@
-from src.PheQTK.modules.cohorts.cohorts import get_cohort
-from src.PheQTK.modules.cohorts.covariate_validation import get_covariates
-from src.PheQTK.modules.cohorts.variant_validation import get_variants
-# from src.PheQTK.modules.phecodes.phecodes import get_phecodes
-# from src.PheQTK.modules.phewass.phewass import run_phewass
-# from src.PheQTK.modules.plots.plots import get_plots
+from PheQTK.modules.cohorts.cohorts import get_cohort
+from PheQTK.modules.cohorts.covariate_validation import get_covariates
+from PheQTK.modules.cohorts.variant_validation import get_variants
+# from PheQTK.modules.phecodes.phecodes import get_phecodes
+# from PheQTK.modules.phewass.phewass import run_phewass
+# from PheQTK.modules.plots.plots import get_plots
 
 
 def main():

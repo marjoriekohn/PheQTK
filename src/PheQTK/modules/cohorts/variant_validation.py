@@ -1,6 +1,6 @@
-from src.PheQTK.helpers.regex_patterns import VARIANT_PATTERN
-from src.PheQTK.modules.cohorts.Variant import Variant
-from src.PheQTK.helpers.response_validation import validate_yes_no_response
+from PheQTK.helpers.regex_patterns import VARIANT_PATTERN
+from PheQTK.modules.cohorts.Variant import Variant
+from PheQTK.helpers.response_validation import validate_yes_no_response
 
 
 def get_variants() -> list[Variant]:

@@ -1,4 +1,5 @@
 
+
 COVARIATE_DESCRIPTIONS = {
     "natural_age": "Age at index date (continuous).",
     "age_at_last_event": "Age at the last observed EHR event.",

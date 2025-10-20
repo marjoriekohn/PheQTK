@@ -1,8 +1,8 @@
 """
 This helper function asks the user if they want to update the covariates.
 """
-from src.PheQTK.helpers.response_validation import validate_yes_no_response, validate_digit_response
-from src.PheQTK.modules.cohorts.Covariates import Covariates
+from PheQTK.helpers.response_validation import validate_yes_no_response, validate_digit_response
+from PheQTK.modules.cohorts.Covariates import Covariates
 
 
 def get_covariates():
