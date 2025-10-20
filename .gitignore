@@ -1,1 +1,7 @@
 .idea/*
+src/__pycache__/
+src/PheQTK/__pycache__/
+src/PheQTK/hail-20251020-1047-0.2.136-c32f88309ab0.log
+src/PheQTK/helpers/__pycache__/
+src/PheQTK/modules/__pycache__/
+src/PheQTK/modules/cohorts/__pycache__/

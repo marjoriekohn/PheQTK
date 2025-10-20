@@ -11,11 +11,13 @@ class Variant:
     cohort_file: str
     covariate_file: str
 
-    @property
-    def name(self) -> str:
-        return (f"Variant ID: {self.variant_id}\n"
+    def __str__(self) -> str:
+        return (f"-------------------------------------------------\n"
+                f"Variant ID: {self.variant_id}\n"
+                f"-------------------------------------------------\n"
                 f"Chromosome: {self.chromosome}\n"
                 f"Position: {self.position}\n"
                 f"Reference Allele: {self.ref_allele}\n"
                 f"Alternate Allele: {self.alt_allele}\n"
+                f"-------------------------------------------------"
                 )
