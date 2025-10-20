@@ -1,6 +1,6 @@
 [project]
 name = "PheQTK"
-version = "0.0.3"
+version = "0.0.4"
 authors = [
   { name="Marjorie Kohn", email="marjoriekohn@icloud.com" },
 ]

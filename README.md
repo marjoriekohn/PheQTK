@@ -4,25 +4,20 @@ PheQTK is a Python package that wraps around [PheTK](https://github.com/nhgritct
 
 ## Installation
 
-Use the package manager [pip](https://pip.pypa.io/en/stable/) to install PheQTK.
+In your All of Us jupyter notebook, install PheQTK using the following command:
 
 ```bash
-pip install PheQTK
+!pip install --upgrade PheQTK 
 ```
 
 ## Usage
 
+To start the PheQTK interface, run the following command:
+
 ```python
-import PheQTK
+from PheQTK import Quick
 
-# returns 
-PheQTK.pluralize('word')
-
-# returns 
-PheQTK.pluralize('goose')
-
-# returns 
-PheQTK.singularize('phenomena')
+Quick.run()
 ```
 
 ## Contributing
