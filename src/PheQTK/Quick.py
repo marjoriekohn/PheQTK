@@ -1,6 +1,7 @@
+from PheQTK.helpers.phecode_validation import get_phecodes
 from PheQTK.modules.cohorts.cohorts import get_cohort
-from PheQTK.modules.cohorts.covariate_validation import get_covariates
-from PheQTK.modules.cohorts.variant_validation import get_variants
+from PheQTK.helpers.covariate_validation import get_covariates
+from PheQTK.helpers.variant_validation import get_variants
 # from PheQTK.modules.phecodes.phecodes import get_phecodes
 # from PheQTK.modules.phewass.phewass import run_phewass
 # from PheQTK.modules.plots.plots import get_plots
@@ -29,9 +30,9 @@ def run():
         get_cohort(variants, covariates)
         print("Cohorts Module complete.")
 
-        # print("Starting Phecodes Module...")
-        # phecodes = get_phecodes()
-        # print("Phecodes Module complete.")
+        print("Starting Phecodes Module...")
+        get_phecodes()
+        print("Phecodes Module complete.")
 
         # print("Starting PheWAS Module...")
         # phewass = run_phewass()
