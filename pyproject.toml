@@ -11,6 +11,11 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Operating System :: OS Independent",
 ]
+
+dependencies = [
+    "PheTK == 0.1.47"
+]
+
 license = "MIT"
 license-files = ["LICEN[CS]E*"]
 
