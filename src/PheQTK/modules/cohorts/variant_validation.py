@@ -27,11 +27,14 @@ def get_variants() -> list[Variant]:
             pos = int(variant.group("pos"))
             ref = variant.group("ref").upper()
             alt = variant.group("alt").upper()
-            cohort_file = f"{unverified_variant}.csv"
-            covariate_file = f"{unverified_variant}_covariates.csv"
+
+            # create file names and id for each variant
+            variant_id = f"{chrom}_{pos}_{ref}_{alt}"
+            cohort_file = f"{variant_id}_cohort.csv"
+            covariate_file = f"{variant_id}_cohort_covariates.csv"
 
             # create a new variant object with the extracted values
-            new_variant = Variant(unverified_variant, chrom, pos, ref, alt, cohort_file, covariate_file)
+            new_variant = Variant(variant_id, chrom, pos, ref, alt, cohort_file, covariate_file)
             variants.append(new_variant)
         else:
             print(f"'{unverified_variant}' is not a valid variant id. Restarting variant module...\n")

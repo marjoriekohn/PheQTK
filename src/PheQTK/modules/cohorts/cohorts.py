@@ -2,10 +2,13 @@ from PheTK.Cohort import Cohort
 
 
 def get_cohort(variants, covariates):
+
+    print("initializing PheTK Cohort Module...")
     cohort = Cohort(platform="aou", aou_db_version=7)
 
     # create cohorts for each variant
     for variant in variants:
+        print(f"PheTK is looking for {variant.variant_id}...")
         # generate cohorts by genotype
         cohort.by_genotype(
             chromosome_number=int(variant.chromosome),
@@ -18,10 +21,10 @@ def get_cohort(variants, covariates):
             mt_path=None,
             output_file_name=variant.cohort_file
         )
-        print(f"Cohort for {variant.name} created.")
 
     # add covariates to cohorts
     for variant in variants:
+        print(f"PheTK is adding covariates to the {variant.variant_id} cohort...")
         cohort.add_covariates(
             cohort_csv_path=variant.cohort_file,
             natural_age=bool(covariates.natural_age),
@@ -35,7 +38,6 @@ def get_cohort(variants, covariates):
             drop_nulls=bool(covariates.drop_nulls),
             output_file_name=variant.covariate_file
         )
-        print(f"Covariates for {variant.name} added.")
 
 # TODO: implement the mt_path option
 # TODO: add option to use different reference genome
