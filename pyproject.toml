@@ -1,6 +1,6 @@
 [project]
 name = "PheQTK"
-version = "0.0.2"
+version = "0.0.3"
 authors = [
   { name="Marjorie Kohn", email="marjoriekohn@icloud.com" },
 ]
@@ -23,6 +23,3 @@ license-files = ["LICEN[CS]E*"]
 Homepage = "https://github.com/marjoriekohn/PheQTK"
 Issues = "https://github.com/marjoriekohn/PheQTK/issues"
 PheTK = "https://github.com/nhgritctran/PheTK"
-
-[project.scripts]
-pheqtk = "PheQTK.main:main"
