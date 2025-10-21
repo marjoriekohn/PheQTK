@@ -4,46 +4,23 @@ This file contains functions for validating user responses.
 
 
 # recursively asks for a valid response from the user
-def validate_yes_no_response(response) -> bool:
-    response = response.lower()
-
-    if response == "y" or response == "yes":
-        return True
-    elif response == "n" or response == "no":
-        return False
-    else:
-        print("Invalid choice.")
-        new_response = input("Please enter 'y' for yes or 'n' for no.")
-        return validate_yes_no_response(new_response)
+def validate_yes_no_response(user_input: str) -> bool:
+    """Return True for yes, False for no; keep asking until valid."""
+    while True:
+        cleaned = (user_input or "").strip().lower()
+        if cleaned in {"y", "yes"}:
+            return True
+        if cleaned in {"n", "no"}:
+            return False
+        user_input = input("Please enter 'y' or 'n': ")
 
 
 # recursively asks for a valid number from the user
-def validate_digit_response(response) -> int:
-    response = response.strip()
-
+def validate_digit_response(user_input) -> int:
+    """Return an integer; keep asking until valid."""
     try:
-        return int(response)
+        return int(user_input)
     except ValueError:
-        print(f"{response} is not a valid number.")
+        print(f"{user_input} is not a valid number.")
         new_response = input("Please enter a number.")
         return validate_digit_response(new_response)
-
-
-# recursively asks for a valid covariate name from the user
-def validate_single_covariate(response) -> str:
-    valid_names = ["natural_age",
-                   "age_at_last_event",
-                   "sex_at_birth"
-                   "ehr_length",
-                   "dx_code_occurrence_count",
-                   "dx_condition_count",
-                   "genetic_ancestry"
-                   "first_n_pcs",
-                   "drop_nulls"
-                   ]
-    if response in valid_names:
-        return response
-    else:
-        print("Invalid covariate name.")
-        new_response = input("Enter a valid covariate name.")
-        return validate_single_covariate(new_response)

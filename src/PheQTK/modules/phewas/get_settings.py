@@ -41,14 +41,27 @@ def get_settings(phecodes, variants) -> list[Phewas]:
     # VARIANT DEPENDENT SETTINGS
     for variant in variants:
 
-        # get covariate columns
+        # get covariate columns and sex_at_birth_col which for some crazy
+        # reason is not a stable column name! why?! I've seen it named
+        # "sex" and "sex_at_birth" so I'm going to assume that searching
+        # using the startswith() method will suffice
         with open(f"{variant.covariate_file}", "r") as infile:
             header_line = infile.readline().strip().split(",")
 
             # the first two columns are patient id and case
             covariate_cols.append(header_line[2:])
 
-            # TODO: get sex_at_birth column name
+            # TODO: get sex_at_birth column name (its position on the column is
+            #  usually the third, fourth, or fifth. The first position is
+            #  always patient_id, second position is always case, is the
+            #  first covariate that has a True setting so at minimum,
+            #  the value will be 3 and max it will be 5)
+            if header_line[3].startswith("sex"):
+                setattr(phewas, "sex_at_birth_col", header_line[3])
+            elif header_line[4].startswith("sex"):
+                setattr(phewas, "sex_at_birth_col", header_line[4])
+            elif header_line[5].startswith("sex"):
+                setattr(phewas, "sex_at_birth_col", header_line[5])
 
         # get cohort csv path
         cohort_csv_path = variant.cohort_file

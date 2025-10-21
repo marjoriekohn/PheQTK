@@ -2,69 +2,66 @@
 This helper function asks the user if they want to update the covariates.
 """
 from PheQTK.helpers.response_validation import validate_yes_no_response, validate_digit_response
+from PheQTK.modules.cohorts import COVARIATES_CATALOG
 from PheQTK.modules.cohorts.Covariates import Covariates
+from PheQTK.helpers.presentation import *
 
 
 def get_covariates() -> Covariates:
+    """
+    Interactive covariate picker for PheTK on AoU.
+    Shows a brief explanation for each covariate, asks a single clear question,
+    and lets the user confirm or redo the whole set.
+    """
 
     # instantiate Covariates object
     covariates = Covariates()
 
-    # print default covariates settings
-    print(f"{covariates}")
+    while True:
+        # print default covariates settings
+        rule("Default Settings for Covariates")
+        print(covariates)
 
-    # ask user for covariate settings
-    is_natural_age = input("Do you want to add natural age as a covariate? (y/n): ")
-    is_natural_age = validate_yes_no_response(is_natural_age)
-    if is_natural_age:
-        setattr(covariates, "natural_age", True)
+        # Overview
+        para("We’ll step through each covariate. For each, you’ll see:")
+        bullet("A short description")
+        bullet("The current value (False means the covariate is excluded)")
+        bullet("An option to update it")
 
-    is_age_at_last_event = input("Do you want to add age at last event as a covariate? (y/n) ")
-    is_age_at_last_event = validate_yes_no_response(is_age_at_last_event)
-    if is_age_at_last_event:
-        setattr(covariates, "age_at_last_event", True)
+        # loop through all covariates
+        for item in COVARIATES_CATALOG:
+            attr = item["attr"]
+            label = item["label"]
+            kind = item["kind"]
+            help_text = item["help"]
 
-    is_ehr_length = input("Do you want to add EHR length as a covariate? (y/n): ")
-    is_ehr_length = validate_yes_no_response(is_ehr_length)
-    if is_ehr_length:
-        setattr(covariates, "ehr_length", True)
+            # get the covariate's current value
+            current_value = getattr(covariates, attr)
 
-    is_dx_code_occurrence_count = input("Do you want to add diagnosis code occurrence count as a covariate? (y/n): ")
-    is_dx_code_occurrence_count = validate_yes_no_response(is_dx_code_occurrence_count)
-    if is_dx_code_occurrence_count:
-        setattr(covariates, "dx_code_occurrence_count", True)
+            # print the information
+            para(f"{label}")
+            bullet(f"Description: {help_text}")
+            bullet(f"Current value: {current_value}")
 
-    is_dx_condition_count = input("Do you want to add diagnosis condition count as a covariate? (y/n): ")
-    is_dx_condition_count = validate_yes_no_response(is_dx_condition_count)
-    if is_dx_condition_count:
-        setattr(covariates, "dx_condition_count", True)
+            if kind == "bool":
+                question = f"Include '{attr}'? (y/n): "
+                want_on = validate_yes_no_response(input(question))
+                setattr(covariates, attr, bool(want_on))
+            elif kind == "int":
+                question = f" Update '{attr}' (currently {current_value})? (y/n): "
+                change_it = validate_yes_no_response(input(question))
+                if change_it:
+                    new_val = validate_digit_response(input("Enter a positive number: "))
+                    setattr(covariates, attr, new_val)
 
-    is_genetic_ancestry = input("Do you want to add genetic ancestry as a covariate? (y/n): ")
-    is_genetic_ancestry = validate_yes_no_response(is_genetic_ancestry)
-    if is_genetic_ancestry:
-        setattr(covariates, "genetic_ancestry", True)
+        # verify covariates are correct before building cohorts
+        rule("Updated Covariates")
+        print(covariates)
+        if validate_yes_no_response(input("Proceed with these covariates? (y/n): ")):
+            rule("✅ Covariates confirmed.")
+            return covariates
 
-    is_first_n_pcs = input("Do you want to add the first n PCs as a covariate? (y/n): ")
-    is_first_n_pcs = validate_yes_no_response(is_first_n_pcs)
-    if is_first_n_pcs:
-        user_input = input("Enter the number of PCs to include: ")
-        user_input = validate_digit_response(user_input)
-        setattr(covariates, "first_n_pcs", user_input)
+        para("🔁 No problem. Lets run through the options again.")
 
-    is_drop_nulls = input("Do you want to drop rows with NULL covariates? (y/n): ")
-    is_drop_nulls = validate_yes_no_response(is_drop_nulls)
-    if is_drop_nulls:
-        setattr(covariates, "drop_nulls", True)
 
-    # verify covariates are correct before building cohorts
-    print("\nYour covariates were updated:\n")
-    print(covariates)
-    user_confirmation = input("Is this information correct? (y/n): ")
-    confirmation = validate_yes_no_response(user_confirmation)
-
-    if not confirmation:
-        print("\nCovariates were not updated. Restarting covariate selection...\n")
-        get_covariates()
-
-    return covariates
 
