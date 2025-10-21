@@ -1,6 +1,22 @@
 """
 One source of truth for prompts and help text.
 """
+PHEWAS_CATALOG = [
+    {
+        "attr": "min_cases",
+        "label": "Minimum cases",
+        "kind": "int",
+        "help": "Minimum cases (and controls) required for a phecode to be tested. Prevents unstable estimates for very rare phenotypes.",
+    },
+    {
+        "attr": "min_phecode_count",
+        "label": "Minimum phecode count",
+        "kind": "int",
+        "help": "Number of qualifying events required to classify a participant as a 'case' for that phecode. Higher thresholds reduce false positives from single miscoded events."
+
+    }
+]
+
 
 COVARIATES_CATALOG = [
     {
@@ -14,12 +30,6 @@ COVARIATES_CATALOG = [
         "label": "Age at last EHR event",
         "kind": "bool",
         "help": "age at last diagnosis event (ICD or SNOMED) in EHR.",
-    },
-    {
-        "attr": "sex_at_birth",
-        "label": "Sex at birth",
-        "kind": "bool",
-        "help": "sex at birth",
     },
     {
         "attr": "ehr_length",

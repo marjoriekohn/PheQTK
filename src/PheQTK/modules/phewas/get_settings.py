@@ -1,87 +1,97 @@
-from PheQTK.helpers.response_validation import validate_yes_no_response, validate_digit_response
+import csv
+
+from PheQTK.helpers.response_validation import validate_yes_no_response, \
+    validate_digit_response
+from PheQTK.modules.cohorts import PHEWAS_CATALOG
 from PheQTK.modules.phewas.Phewas import Phewas
+from PheQTK.helpers.presentation import *
 
 
 def get_settings(phecodes, variants) -> list[Phewas]:
-    settings = []
-    covariate_cols = []
+    """Build a list of Phewas objects (one per variant) so that:
+     • A Phewas run is specific to one variant.
+     • A Phewas run uses the same covariates for all variants.
+     • A Phewas run uses the same phecode settings for all variants.
+    """
 
-    # create the phewas object
-    phewas = Phewas(covariate_cols)
+    settings: list[Phewas] = []
 
-    # USER DEFINED SETTINGS
-    # min_cases settings
-    print(f"To test a phecode, there must be {phewas.min_cases} cases and at "
-          f"least {phewas.min_cases} controls per phecode.")
-    is_min_cases = input("Do you want to change min_cases? (y/n): ")
-    is_min_cases = validate_yes_no_response(is_min_cases)
-    if is_min_cases:
-        user_input = input("Enter the minimum number of cases: ")
-        user_input = validate_digit_response(user_input)
-        setattr(phewas, "min_cases", user_input)
-        print(f"Phecodes must now have at least {phewas.min_cases} cases and controls for the phecode to be tested.")
+    # We keep a temporary location to hold the two configuration settings
+    base = Phewas(covariate_cols=[])
 
-    # min_phecode_count settings
-    print(f"A participant is considered a 'case' for a phecode if they have {phewas.min_phecode_count} or more qualifying events.")
-    is_min_phecode_count = input("Do you want to change min_phecode_count? (y/n): ")
-    is_min_phecode_count = validate_yes_no_response(is_min_phecode_count)
-    if is_min_phecode_count:
-        user_input = input("Enter the minimum number of phecode counts: ")
-        user_input = validate_digit_response(user_input)
-        setattr(phewas, "min_phecode_count", user_input)
-        print(f"A participant must now have a minimum count of {phewas.min_phecode_count} phecode events to be considered a case.")
+    # PHECODE SETTINGS (same for all runs)
+    setattr(base, "phecode_version", phecodes.phecode_version)
+    setattr(base, "phecode_count_csv_path", phecodes.output_file_name)
 
-    # PHECODE SETTINGS
-    phecode_version = phecodes.phecode_version
-    setattr(phewas, "phecode_version", phecode_version)
+    while True:
+        # PHEWAS CONFIGURATION (same for all runs)
+        for item in PHEWAS_CATALOG:
+            attr = item["attr"]
+            label = item["label"]
+            help_text = item["help"]
 
-    phecode_count_csv_path = phecodes.output_file_name
-    setattr(phewas, "phecode_count_csv_path", phecode_count_csv_path)
+            # get the current config settings
+            current_value = getattr(base, attr)
+            print(f"\n{label}")
+            print(f"  Description: {help_text}")
+            print(f"  Current value: {current_value}")
 
-    # VARIANT DEPENDENT SETTINGS
-    for variant in variants:
+            # update the settings if the user wants to
+            if validate_yes_no_response(input(f"  Update '{attr}' (y/n): ")):
+                new_val = validate_digit_response(input("Enter a positive integer: "))
+                setattr(base, attr, int(new_val))
 
-        # get covariate columns and sex_at_birth_col which for some crazy
-        # reason is not a stable column name! why?! I've seen it named
-        # "sex" and "sex_at_birth" so I'm going to assume that searching
-        # using the startswith() method will suffice
-        with open(f"{variant.covariate_file}", "r") as infile:
-            header_line = infile.readline().strip().split(",")
+        # PER-VARIANT PHEWAS CONSTRUCTION (one for each variant)
+        settings.clear()        # clear the list of settings
+        rejected_any = False    # reset the rejected_any flag
 
-            # the first two columns are patient id and case
-            covariate_cols.append(header_line[2:])
+        for variant in variants:
 
-            # TODO: get sex_at_birth column name (its position on the column is
-            #  usually the third, fourth, or fifth. The first position is
-            #  always patient_id, second position is always case, is the
-            #  first covariate that has a True setting so at minimum,
-            #  the value will be 3 and max it will be 5)
-            if header_line[3].startswith("sex"):
-                setattr(phewas, "sex_at_birth_col", header_line[3])
-            elif header_line[4].startswith("sex"):
-                setattr(phewas, "sex_at_birth_col", header_line[4])
-            elif header_line[5].startswith("sex"):
-                setattr(phewas, "sex_at_birth_col", header_line[5])
+            # create a phewas object for each variant and add global settings
+            phewas = Phewas(covariate_cols=[])
 
-        # get cohort csv path
-        cohort_csv_path = variant.cohort_file
-        setattr(phewas, "cohort_csv_path", cohort_csv_path)
+            # save global configuration to the new object
+            setattr(phewas, "phecode_version", getattr(base, "phecode_version"))
+            setattr(phewas, "phecode_count_csv_path", getattr(base, "phecode_count_csv_path"))
+            setattr(phewas, "min_cases", int(getattr(base, "min_cases")))
+            setattr(phewas, "min_phecode_count", int(getattr(base, "min_phecode_count")))
 
-        # create the output file name
-        output_file_name = f"{variant.variant_id}_phewas_results.csv"
-        setattr(phewas, "output_file_name", output_file_name)
+            with open(variant.covariate_file, "r") as infile:
+                reader = csv.reader(infile)
+                header = next(reader)
 
-        # print default settings for user to review
-        print(f"{phewas}")
+                # skip the first two columns (patient id and case)
+                setattr(phewas, "covariate_cols", header[2:])
 
-        # verify settings are correct before running phewas
-        user_confirmation = input("Are these settings correct? (y/n): ")
-        confirmation = validate_yes_no_response(user_confirmation)
+                # find the "sex_at_birth" column name
+                if header[3].startswith("sex"):
+                    setattr(phewas, "sex_at_birth_col", header[3])
+                elif header[4].startswith("sex"):
+                    setattr(phewas, "sex_at_birth_col", header[4])
+                elif header[5].startswith("sex"):
+                    setattr(phewas, "sex_at_birth_col", header[5])
 
-        if not confirmation:
-            get_settings(phecodes, variants)
+            # variant dependent paths
+            setattr(phewas, "cohort_csv_path", variant.cohort_file)
+            setattr(phewas, "output_file_name", f"{variant.variant_id}_phewas_results.csv")
 
-        # add these settings to the list
-        settings.append(phewas)
+            # print updated phewas configuration
+            rule(f"Updated PheWAS Configuration for {variant.variant_id}")
+            print(phewas)
+
+            # confirm with the user that the settings are correct
+            if validate_yes_no_response(input("Proceed with this configuration? (y/n): ")):
+                rule(f"✅ PheWAS Configuration for {variant.variant_id} confirmed.")
+                settings.append(phewas)
+
+            # stop iterating over variants if the user rejects the settings
+            else:
+                print("🔁 No problem. Let’s run through the options again.")
+                rejected_any = True
+                break
+
+        # if all variants are confirmed, break out of the loop
+        if not rejected_any:
+            break
 
     return settings

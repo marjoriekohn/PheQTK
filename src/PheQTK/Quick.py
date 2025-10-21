@@ -23,7 +23,7 @@ def run():
     # Overview
     para("PheQTK automates the following modules:")
     bullet("Cohorts — build a genotype-defined cohort with covariates")
-    bullet("Phecodes — choose Phecode and ICD mapping versions")
+    bullet("Phecodes — choose Phecode and ICD mapping versions (coming soon)")
     bullet("PheWAS — run association scans using your cohort and mappings")
     bullet("Plots — visual summaries (coming soon)")
     rule()
@@ -61,7 +61,7 @@ def run():
     get_counts(phecodes)
     for settings in phewas_settings:
         run_phewas(settings)
-        print("PheTK Modules complete! Congrats 🎉")
+    print("PheTK Modules complete! Congrats 🎉")
 
 
 if __name__ == "__main__":

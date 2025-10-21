@@ -39,6 +39,7 @@ def get_covariates() -> Covariates:
             current_value = getattr(covariates, attr)
 
             # print the information
+            rule(f"Covariate: {attr}")
             para(f"{label}")
             bullet(f"Description: {help_text}")
             bullet(f"Current value: {current_value}")
